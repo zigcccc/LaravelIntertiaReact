@@ -8,12 +8,11 @@ import { PrimaryButton } from '@/Components/PrimaryButton';
 import { AuthenticatedLayout } from '@/Layouts/AuthenticatedLayout';
 import { type ChirpWithUserInfo } from '@/Types/chirp';
 
-type ChirpsIndexProps = {
-  auth: PageProps['auth'];
+type ChirpsIndexProps = PageProps & {
   chirps: ChirpWithUserInfo[];
 };
 
-export default function ChirpsIndex({ chirps }: ChirpsIndexProps) {
+export default function ChirpsIndex({ chirps, auth }: ChirpsIndexProps) {
   const { data, setData, post, processing, reset, errors } = useForm({
     message: '',
   });
@@ -42,7 +41,7 @@ export default function ChirpsIndex({ chirps }: ChirpsIndexProps) {
         </form>
         <div className="mt-6 divide-y rounded-lg bg-white shadow-sm">
           {chirps.map((chirp) => (
-            <Chirp key={chirp.id} chirp={chirp} />
+            <Chirp key={chirp.id} chirp={chirp} user={auth.user} />
           ))}
         </div>
       </div>

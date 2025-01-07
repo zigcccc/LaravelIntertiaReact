@@ -1,8 +1,23 @@
+import { useForm } from '@inertiajs/react';
 import dayjs from 'dayjs';
+import { type FormEvent, useState } from 'react';
+
+import { Dropdown } from '../Dropdown';
+import { InputError } from '../InputError';
+import { PrimaryButton } from '../PrimaryButton';
 
 import { type ChirpProps } from './Chirp.types';
 
-export function Chirp({ chirp }: ChirpProps) {
+export function Chirp({ chirp, user }: ChirpProps) {
+  const form = useForm({ message: chirp.message });
+
+  const [editing, setEditing] = useState(false);
+
+  const submit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    form.patch(route('chirps.update', chirp.id), { onSuccess: () => setEditing(false) });
+  };
+
   return (
     <div className="flex space-x-2 p-6">
       <svg
@@ -23,10 +38,59 @@ export function Chirp({ chirp }: ChirpProps) {
         <div className="flex items-center justify-between">
           <div>
             <span className="text-gray-800">{chirp.user.name}</span>
-            <small className="ml-2 text-sm text-gray-600">{dayjs(chirp.created_at).fromNow()}</small>
+            <small className="ml-2 text-sm text-gray-600">{dayjs(chirp.updated_at).fromNow()}</small>
+            {chirp.created_at !== chirp.updated_at && <small className="text-sm text-gray-600"> &middot; edited</small>}
           </div>
+          {chirp.user.id === user.id && (
+            <Dropdown>
+              <Dropdown.Trigger>
+                <button>
+                  <svg
+                    className="h-4 w-4 text-gray-400"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                  </svg>
+                </button>
+              </Dropdown.Trigger>
+              <Dropdown.Content>
+                <button
+                  className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100"
+                  onClick={() => setEditing(true)}
+                >
+                  Edit
+                </button>
+              </Dropdown.Content>
+            </Dropdown>
+          )}
         </div>
-        <p className="mt-4 text-lg text-gray-900">{chirp.message}</p>
+        {editing ? (
+          <form onSubmit={submit}>
+            <textarea
+              className="mt-4 w-full rounded-md border-gray-300 text-gray-900 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+              onChange={(e) => form.setData('message', e.target.value)}
+              value={form.data.message}
+            />
+            <InputError className="mt-2" message={form.errors.message} />
+            <div className="space-x-2">
+              <PrimaryButton className="mt-4">{form.processing ? 'Saving...' : 'Save'}</PrimaryButton>
+              <button
+                className="mt-4"
+                onClick={() => {
+                  setEditing(false);
+                  form.reset();
+                  form.clearErrors();
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        ) : (
+          <p className="mt-4 text-lg text-gray-900">{chirp.message}</p>
+        )}
       </div>
     </div>
   );
