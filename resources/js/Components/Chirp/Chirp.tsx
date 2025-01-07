@@ -62,6 +62,14 @@ export function Chirp({ chirp, user }: ChirpProps) {
                 >
                   Edit
                 </button>
+                <Dropdown.Link
+                  as="button"
+                  className="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 transition duration-150 ease-in-out hover:bg-gray-100 focus:bg-gray-100"
+                  href={route('chirps.destroy', chirp.id)}
+                  method="delete"
+                >
+                  Delete
+                </Dropdown.Link>
               </Dropdown.Content>
             </Dropdown>
           )}
