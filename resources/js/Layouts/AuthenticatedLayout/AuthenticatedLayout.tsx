@@ -33,6 +33,9 @@ export function AuthenticatedLayout({ header, children }: AuthenticatedLayoutPro
                 <NavLink active={route().current('dashboard')} href={route('dashboard')}>
                   Dashboard
                 </NavLink>
+                <NavLink active={route().current('chirps.index')} href={route('chirps.index')}>
+                  Chirps
+                </NavLink>
               </div>
             </div>
 
@@ -103,6 +106,9 @@ export function AuthenticatedLayout({ header, children }: AuthenticatedLayoutPro
           <div className="space-y-1 pb-3 pt-2">
             <ResponsiveNavLink active={route().current('dashboard')} href={route('dashboard')}>
               Dashboard
+            </ResponsiveNavLink>
+            <ResponsiveNavLink active={route().current('chirps.index')} href={route('chirps.index')}>
+              Chirps
             </ResponsiveNavLink>
           </div>
 
